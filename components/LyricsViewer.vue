@@ -27,7 +27,7 @@
       </div>
       
       <div v-else-if="playbackStore.lyrics_text" :class="lyricsContentClass">
-        <pre class="whitespace-pre-wrap font-light text-base leading-relaxed">{{ playbackStore.lyrics_text }}</pre>
+        <pre class="whitespace-pre-wrap sm:text-xl text-2xl font-light leading-[1.75] sm:leading-relaxed">{{ playbackStore.lyrics_text }}</pre>
       </div>
       
       <div v-else class="flex flex-col items-center justify-center text-white/50 py-8">

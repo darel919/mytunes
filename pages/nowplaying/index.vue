@@ -92,11 +92,12 @@ const playerState = computed(() => playbackStore.player_state)
 const elapsedTime = computed(() => playbackStore.elapsed_time)
 
 function navigateBack() {
-  if (isMobile.value) {
-    router.push('/')
-  } else {
-    router.back()
-  }
+  // if (isMobile.value) {
+  //   router.push('/')
+  // } else {
+  //   router.back()
+  // }
+  router.push('/')
 }
 const updateMobileStatus = (skipVolumeChange = false) => {
   if (process.client) {

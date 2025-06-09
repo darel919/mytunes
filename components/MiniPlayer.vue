@@ -15,6 +15,15 @@ const playerState = computed(() => {
 const shouldShowMiniPlayer = computed(() => {
     return store.shouldShowMiniPlayer;
 });
+const streamSrc = computed(() => {
+    return store.stream_src;
+});
+const streamName = computed(() => {
+    return store.stream_name;
+});
+const streamArtwork = computed(() => {
+    return store.stream_artwork;
+});
 
 const route = useRoute();
 const isInLyricsMode = computed(() => {
@@ -45,16 +54,12 @@ onMounted(() => {
 </script>
 
 <template>    
-<section v-if="nowPlaying && (!isFullScreen || shouldShowMiniPlayer)" class="fixed bottom-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16" @click="navigateToNowPlaying">
+<section v-if="streamSrc && (!isFullScreen || shouldShowMiniPlayer)" class="fixed bottom-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16" @click="navigateToNowPlaying">
         <div class="flex items-center gap-4">
-            <img :src="nowPlaying.artwork" alt="Cover Image" class="w-16 object-cover" />
-            <section v-if="nowPlaying && nowPlaying.title && nowPlaying.artist">
-                <h2 class="font-medium">{{ nowPlaying.title }}</h2>
-                <p class="opacity-50 text-xs">{{ nowPlaying.artist }}</p>
-            </section>
-            <section v-else-if="nowPlaying && !nowPlaying.title && !nowPlaying.artist">
-                <h2 class="font-medium">{{ nowPlaying.title }}</h2>
-                <p class="opacity-50 text-xs">{{ nowPlaying.artist }}</p>
+            <img :src="nowPlaying?.artwork || streamArtwork" alt="Cover Image" class="w-16 object-cover" />
+            <section>
+                <h2 class="font-medium">{{ nowPlaying?.title || streamName }}</h2>
+                <p v-if="nowPlaying?.artist" class="opacity-50 text-xs">{{ nowPlaying.artist }}</p>
             </section>        
         </div>
         

@@ -13,6 +13,8 @@ export const usePlaybackStore = defineStore('playback', {
         is_mobile_mode: false,
         stream_src: null,
         stream_api: null,
+        stream_name: null,
+        stream_artwork:null,
 
         current_metadata: null,
         selected_track: null,
@@ -28,6 +30,8 @@ export const usePlaybackStore = defineStore('playback', {
             if(item.stream_src && item.stream_api) {
                 this.stream_src = item.stream_src
                 this.stream_api = item.stream_api
+                this.stream_name = item.title
+                this.stream_artwork = item.artwork
                 this.selected_track = item
                 console.warn('Setting current track:', item)
                 
@@ -40,7 +44,7 @@ export const usePlaybackStore = defineStore('playback', {
         },
         setPlayerState(state) {
             this.player_state = state        
-        },              
+        },                
         setMetadata(metadata) {
             const previousSongId = this.current_metadata?.song_id
             this.current_metadata = metadata
@@ -49,6 +53,8 @@ export const usePlaybackStore = defineStore('playback', {
                 this.clearLyrics()
                 this.fetchLyrics()
             }
+            
+            this.setNavigatorMetadata()
         },
         setElapsedTime(time) {
             this.elapsed_time = time
@@ -58,6 +64,26 @@ export const usePlaybackStore = defineStore('playback', {
         },
         setShouldShowMiniPlayer(shouldShow) {
             this.shouldShowMiniPlayer = shouldShow
+        },
+        setNavigatorMetadata() {
+            if ('mediaSession' in navigator && this.current_metadata) {                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: this.current_metadata.title || 'Unknown Title',
+                    artist: this.current_metadata.artist || 'Unknown Artist',
+                    album: this.stream_name,
+                    artwork: this.current_metadata.artwork ? [
+                        { src: this.current_metadata.artwork, sizes: '256x256', type: 'image/webp' }
+                    ] : []
+                });
+                navigator.mediaSession.setActionHandler("play", () => {
+                    this.player_remote = 'play'
+                });
+                navigator.mediaSession.setActionHandler("pause", () => {
+                    this.player_remote = 'pause'
+                });
+                navigator.mediaSession.setActionHandler("stop", () => {
+                    this.player_remote = 'stop'
+                });
+            }
         },
         async fetchLyrics() {
             if(!this.current_metadata || !this.current_metadata.song_id) {
