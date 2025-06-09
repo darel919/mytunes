@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
   css: ['~/assets/css/main.css'],
-
   runtimeConfig: {
     public: {
       endpoint: process.env.NODE_ENV === 'development' ? `${process.env.BASE_API_DEV}${process.env.API_PATH}`: `${process.env.BASE_API_PROD}${process.env.API_PATH}`,
@@ -17,6 +16,9 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  pwa: {
+    /* your pwa options */
+  },
 
-  modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@vite-pwa/nuxt'],
 })
