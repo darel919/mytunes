@@ -3,9 +3,34 @@ import { usePlaybackStore } from '@/stores/playback';
 const store = usePlaybackStore();
 const src = computed(() => store.stream_src);
 
+let timeUpdateInterval = null;
+
+const handleTimeUpdate = (event) => {
+  const currentTime = event.target.currentTime;
+  store.setElapsedTime(Math.floor(currentTime));
+};
+
+const handlePlay = () => {
+  store.setPlayerState('playing');
+};
+
+const handlePause = () => {
+  store.setPlayerState('paused');
+};
+
+const handleEnded = () => {
+  store.setPlayerState('stopped');
+  store.setElapsedTime(0);
+};
+
 onMounted(() => {
   console.log('Player component mounted');
-  console.log('Playback state:', store.player_state);
+});
+
+onUnmounted(() => {
+  if (timeUpdateInterval) {
+    clearInterval(timeUpdateInterval);
+  }
 });
 
 </script>
@@ -15,8 +40,10 @@ onMounted(() => {
       :src="src"
       autoplay
       preload="metadata"
-      @play="store.setPlayerState('playing')"
-      @pause="store.setPlayerState('paused')"
+      @play="handlePlay"
+      @pause="handlePause"
+      @ended="handleEnded"
+      @timeupdate="handleTimeUpdate"
     />
     <MetadataFetcher />
   </section>

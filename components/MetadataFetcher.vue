@@ -14,7 +14,6 @@ const fetchMetadata = async () => {
                 }
             });
             const data = await response.json();
-            // console.log('Metadata fetched:', data);
             store.setMetadata(data);
         } catch (error) {
             console.error('Error fetching metadata:', error);
@@ -39,7 +38,6 @@ const stopFetching = () => {
 
 watch(() => store.stream_api, (newApi) => {
     if (newApi) {
-        console.log('New stream API:', newApi);
         startFetching();
     } else {
         stopFetching();
@@ -47,7 +45,6 @@ watch(() => store.stream_api, (newApi) => {
 });
 
 onMounted(() => {
-    console.log('MetadataFetcher component mounted');
     startFetching();
 });
 
