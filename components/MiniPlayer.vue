@@ -25,6 +25,55 @@ const streamArtwork = computed(() => {
     return store.stream_artwork;
 });
 
+const themeColor = computed(() => {
+    return store.theme_color;
+});
+const themeColorRgb = computed(() => {
+    return store.theme_color_rgb;
+});
+
+const textColor = computed(() => {
+    return store.complementaryColor || 'white';
+});
+
+const hasThemeColor = computed(() => {
+    return store.hasThemeColor;
+});
+
+const miniPlayerStyle = computed(() => {
+    if (!themeColor.value || !themeColorRgb.value) {
+        return 'bg-gray-800';
+    }
+    
+    const { r, g, b } = themeColorRgb.value;
+    return {
+        backgroundColor: `rgba(${r}, ${g}, ${b}, 0.9)`,
+        borderTop: `2px solid ${themeColor.value}`,
+    };
+});
+
+const buttonStyle = computed(() => {
+    if (!themeColor.value) {
+        return {};
+    }
+    
+    return {
+        backgroundColor: `${themeColor.value}40`,
+    };
+});
+
+const handleButtonMouseEnter = (event) => {
+    if (themeColor.value) {
+        event.target.style.backgroundColor = `${themeColor.value}60`;
+    }
+};
+
+const handleButtonMouseLeave = (event) => {
+    if (themeColor.value) {
+        event.target.style.backgroundColor = `${themeColor.value}40`;
+    }
+};
+
 const route = useRoute();
 const isInLyricsMode = computed(() => {
     return route.query.showLyrics === 'true';
@@ -34,18 +83,24 @@ const navigateToNowPlaying = () => {
     navigateTo({ path: '/nowplaying' }, { replace: true });
 };
 
-const navigateToLyrics = (event) => {
-    event.stopPropagation();
-    if (isInLyricsMode.value) {
-        navigateTo({ path: '/nowplaying' }, { replace: true });
-    } else {
-        navigateTo('/nowplaying?showLyrics=true');
-    }
-};
 
 const handlePlayPause = (event) => {
     event.stopPropagation();
     store.playPause();
+};
+
+const handleMouseEnter = (event) => {
+    if (themeColorRgb.value) {
+        const { r, g, b } = themeColorRgb.value;
+        event.target.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 1)`;
+    }
+};
+
+const handleMouseLeave = (event) => {
+    if (themeColorRgb.value) {
+        const { r, g, b } = themeColorRgb.value;
+        event.target.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.9)`;
+    }
 };
 
 onMounted(() => {
@@ -54,20 +109,25 @@ onMounted(() => {
 </script>
 
 <template>    
-<section v-if="streamSrc && (!isFullScreen || shouldShowMiniPlayer)" class="fixed bottom-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16" @click="navigateToNowPlaying">
-        <div class="flex items-center gap-4">
+<section v-if="streamSrc && (!isFullScreen || shouldShowMiniPlayer)" 
+         :style="themeColor ? miniPlayerStyle : {}"
+         :class="themeColor ? 'fixed bottom-0 left-0 w-full text-white flex items-center justify-between z-50 cursor-pointer theme-transition h-16' : 'fixed bottom-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16'"
+         @click="navigateToNowPlaying"
+         @mouseenter="handleMouseEnter"
+         @mouseleave="handleMouseLeave">        <div class="flex items-center gap-4">
             <img :src="nowPlaying?.artwork || streamArtwork" alt="Cover Image" class="w-16 object-cover" />
             <section>
-                <h2 class="font-medium">{{ nowPlaying?.title || streamName }}</h2>
-                <p v-if="nowPlaying?.artist" class="opacity-50 text-xs">{{ nowPlaying.artist }}</p>
+                <h2 class="font-medium" :style="{ color: hasThemeColor ? textColor : 'white' }">{{ nowPlaying?.title || streamName }}</h2>
+                <p v-if="nowPlaying?.artist" class="opacity-50 text-xs" :style="{ color: hasThemeColor ? textColor : 'white' }">{{ nowPlaying.artist }}</p>
             </section>        
         </div>
         
         <div class="flex items-center gap-2 mr-4">
-            <!-- Play/Pause Button -->
-            <button 
+            <!-- Play/Pause Button -->            <button 
                 @click="handlePlayPause"
-                class="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
+                @mouseenter="handleButtonMouseEnter"                @mouseleave="handleButtonMouseLeave"
+                :class="themeColor ? 'flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300' : 'flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300'"
+                :style="themeColor ? { ...buttonStyle, color: textColor } : {}"
                 :aria-label="playerState === 'playing' ? 'Pause' : 'Play'"
             >
                 <!-- Play Icon -->

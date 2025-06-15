@@ -24,7 +24,22 @@ export const usePlaybackStore = defineStore('playback', {
         lyrics_loading: false,
         lyrics_error: null,
         lyrics_available: false,
+        
+        theme_color: null,
+        theme_color_rgb: null,
     }),
+    getters: {
+        hasThemeColor: (state) => !!state.theme_color,
+        themeColorWithOpacity: (state) => (opacity = 0.9) => {
+            if (!state.theme_color_rgb) return null;
+            const { r, g, b } = state.theme_color_rgb;
+            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        },        complementaryColor: (state) => {
+            if (!state.theme_color_rgb) return '#ffffff'
+            const { r, g, b } = state.theme_color_rgb
+            const brightness = (r * 0.299 + g * 0.587 + b * 0.114)
+            return brightness > 128 ? '#000000' : '#ffffff'
+        }},
     actions: {            
         setCurrentTrack(item) {
             if(item.stream_src && item.stream_api) {
@@ -34,6 +49,13 @@ export const usePlaybackStore = defineStore('playback', {
                 this.stream_artwork = item.artwork
                 this.selected_track = item
                 console.warn('Setting current track:', item)
+                
+                if (item.artwork_rgb) {
+                    const hexColor = `#${item.artwork_rgb.r.toString(16).padStart(2, '0')}${item.artwork_rgb.g.toString(16).padStart(2, '0')}${item.artwork_rgb.b.toString(16).padStart(2, '0')}`
+                    this.setThemeColor(hexColor, item.artwork_rgb)
+                } else {
+                    this.clearThemeColor()
+                }
                 
                 if (item.id) {
                     this.clearLyrics()
@@ -96,7 +118,7 @@ export const usePlaybackStore = defineStore('playback', {
             this.lyrics_error = null
             
             try {
-                console.warn('Fetching lyrics for song ID:', this.current_metadata.song_id)
+                // console.warn('Fetching lyrics for song ID:', this.current_metadata.song_id)
                 const api = useRuntimeConfig().public.endpoint;
                 const response = await fetch(`${api}/lyrics?id=${encodeURIComponent(this.current_metadata.song_id)}`, {
                     headers: {
@@ -134,7 +156,7 @@ export const usePlaybackStore = defineStore('playback', {
             }
         },        
         clearLyrics() {
-            console.warn('Clearing lyrics for current track')
+            // console.warn('Clearing lyrics for current track')
             this.lyrics_text = null
             this.lyrics_error = null
             this.lyrics_available = false
@@ -177,6 +199,19 @@ export const usePlaybackStore = defineStore('playback', {
                     this.setPlayerVolume(this.saved_volume)
                 }
             }
+        },
+        setThemeColor(color, rgb) {
+            this.theme_color = color
+            this.theme_color_rgb = rgb        },
+        clearThemeColor() {
+            this.theme_color = null
+            this.theme_color_rgb = null
+        },
+        calculateTextColor(rgb) {
+            if (!rgb) return '#ffffff'
+            const { r, g, b } = rgb
+            const brightness = (r * 0.299 + g * 0.587 + b * 0.114)
+            return brightness > 128 ? '#000000' : '#ffffff'
         }
     },
 })

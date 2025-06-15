@@ -30,11 +30,15 @@
             <div :class="infoContentClass">
                 <!-- Title -->
                 <h1 :class="titleClass">
-                {{ metadata?.title || 'No track selected' }}
-                </h1>          <!-- Artist -->
-          <h2 :class="artistClass">
-            {{ metadata?.artist || 'Unknown Artist' }}
-          </h2>
+                {{ metadata?.title || radioName }}
+                </h1>          
+                <!-- Artist -->
+                <h2 :class="artistClass" v-if="metadata?.artist">
+                  {{ metadata.artist }}
+                </h2>
+                <h2 :class="radioClass" v-if="radioName">
+                  {{ radioName }}
+                </h2>
           
           <!-- Metadata (full and compact only) -->
                 <div v-if="size === 'full' || size === 'compact'" class="flex flex-wrap gap-6 justify-start text-slate-400 text-sm transition-all duration-1000 ease-in-out" :class="{ 'justify-center': size === 'compact' }">
@@ -129,6 +133,7 @@ const props = defineProps({
     validator: (value) => ['full', 'small', 'compact'].includes(value)
   },
   metadata: Object,
+  radioName: String,
   playerState: String,
   elapsedTime: Number,
   formatTime: Function
@@ -247,7 +252,7 @@ const iconClass = computed(() => {
 const infoContainerClass = computed(() => {
   const baseTransition = 'transition-all duration-1000 ease-in-out'
   if (props.size === 'small') {
-    return `flex flex-col justify-center ml-4 ${baseTransition}`
+    return `flex flex-col justify-center mx-4 ${baseTransition}`
   }
   if (props.size === 'compact') {
     return `text-left ${baseTransition}`
@@ -270,7 +275,7 @@ const infoContentClass = computed(() => {
 const titleClass = computed(() => {
   const baseTransition = 'font-light text-white leading-tight transition-all duration-1000 ease-in-out'
   if (props.size === 'small') {
-    return `text-xl ${baseTransition}`
+    return `text-xl opacity-75 ${baseTransition}`
   }
   if (props.size === 'compact') {
     const size = isMobile.value ? 'text-2xl' : 'text-3xl'
@@ -283,7 +288,7 @@ const titleClass = computed(() => {
 const artistClass = computed(() => {
   const baseTransition = 'font-light text-purple-200 opacity-90 transition-all duration-1000 ease-in-out'
   if (props.size === 'small') {
-    return `text-md ${baseTransition}`
+    return `text-5xl ${baseTransition}`
   }
   if (props.size === 'compact') {
     const size = isMobile.value ? 'text-xl' : 'text-2xl'

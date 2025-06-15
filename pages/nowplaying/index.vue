@@ -28,11 +28,11 @@
           />
         </div>
       </div>
-      <!-- Default Layout (No Lyrics or Mobile) -->
       <div v-else>
         <NowPlayingData 
           size="full"
           :metadata="currentMetadata"
+          :radioName="radioName"
           :playerState="playerState"
           :elapsedTime="elapsedTime"
           :formatTime="formatTime"
@@ -48,10 +48,10 @@
         />      
       </div>      
       <!-- Back Button -->
-      <div class="fixed bottom-8 left-8 transition-all duration-1000 ease-in-out">
+      <div class="fixed bottom-8 left-6 transition-all duration-1000 ease-in-out">
         <button 
           @click="navigateBack()"
-          class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/80 hover:bg-white/20 transition-all duration-300 hover:text-white"
+          class="flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/80 hover:bg-white/20 transition-all duration-300 hover:text-white"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -89,6 +89,7 @@ let inactivityTimer = null
 
 const currentMetadata = computed(() => playbackStore.current_metadata)
 const playerState = computed(() => playbackStore.player_state)
+const radioName = computed(() => playbackStore.stream_name)
 const elapsedTime = computed(() => playbackStore.elapsed_time)
 
 function navigateBack() {

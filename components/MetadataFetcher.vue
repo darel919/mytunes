@@ -12,9 +12,15 @@ const fetchMetadata = async () => {
                     'X-App': 'myTunes',
                     'X-Env': process.env.NODE_ENV
                 }
-            });
-            const data = await response.json();
+            });              const data = await response.json();
             store.setMetadata(data);
+            
+            if (data?.artwork_rgb) {
+                const hexColor = `#${data.artwork_rgb.r.toString(16).padStart(2, '0')}${data.artwork_rgb.g.toString(16).padStart(2, '0')}${data.artwork_rgb.b.toString(16).padStart(2, '0')}`
+                store.setThemeColor(hexColor, data.artwork_rgb)
+            } else {
+                store.clearThemeColor()
+            }
         } catch (error) {
             console.error('Error fetching metadata:', error);
         }
