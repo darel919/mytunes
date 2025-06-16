@@ -298,4 +298,16 @@ const artistClass = computed(() => {
   return `${size} ${baseTransition}`
 })
 
+const radioClass = computed(() => {
+  const baseTransition = 'font-light text-blue-200 opacity-90 transition-all duration-1000 ease-in-out'
+  if (props.size === 'small') {
+    return `text-5xl ${baseTransition}`
+  }
+  if (props.size === 'compact') {
+    const size = isMobile.value ? 'text-sm' : 'text-xl'
+    return `${size} ${baseTransition}`
+  }
+  const size = isMobile.value ? 'text-sm' : 'text-xl'
+  return `${size} ${baseTransition}`
+})
 </script>

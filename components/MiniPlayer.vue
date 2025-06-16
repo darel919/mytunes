@@ -111,7 +111,7 @@ onMounted(() => {
 <template>    
 <section v-if="streamSrc && (!isFullScreen || shouldShowMiniPlayer)" 
          :style="themeColor ? miniPlayerStyle : {}"
-         :class="themeColor ? 'fixed bottom-0 left-0 w-full text-white flex items-center justify-between z-50 cursor-pointer theme-transition h-16' : 'fixed bottom-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16'"
+         :class="themeColor ? 'fixed bottom-0 left-0 w-full text-white flex items-center justify-between z-50 cursor-pointer theme-transition h-16' : 'fixed bottom-0 left-4 right-4 bg-gray-800 text-white flex items-center justify-between z-50 cursor-pointer hover:bg-gray-700 transition-colors duration-200 h-16 my-4 '"
          @click="navigateToNowPlaying"
          @mouseenter="handleMouseEnter"
          @mouseleave="handleMouseLeave">        <div class="flex items-center gap-4">
@@ -123,9 +123,11 @@ onMounted(() => {
         </div>
         
         <div class="flex items-center gap-2 mr-4">
-            <!-- Play/Pause Button -->            <button 
+            <!-- Play/Pause Button -->            
+             <button 
                 @click="handlePlayPause"
-                @mouseenter="handleButtonMouseEnter"                @mouseleave="handleButtonMouseLeave"
+                @mouseenter="handleButtonMouseEnter"                
+                @mouseleave="handleButtonMouseLeave"
                 :class="themeColor ? 'flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300' : 'flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300'"
                 :style="themeColor ? { ...buttonStyle, color: textColor } : {}"
                 :aria-label="playerState === 'playing' ? 'Pause' : 'Play'"

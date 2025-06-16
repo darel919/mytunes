@@ -237,9 +237,9 @@ useHead({
   title: computed(() => {
     const metadata = currentMetadata.value
     if (metadata?.title && metadata?.artist) {
-      return `${metadata.title} - ${metadata.artist} | MyTunes`
+      return `${metadata.title} - ${metadata.artist} | myTunes`
     }
-    return 'Now Playing | MyTunes'
+    return 'Now Playing | myTunes'
   })
 })
 </script>
